@@ -35,7 +35,6 @@
       }
     }
 
-    /* Cảnh báo xoay màn hình */
     #rotateNotice {
       position: fixed;
       top: 0;
@@ -71,22 +70,22 @@
       100% { transform: rotate(0deg); }
     }
 
-    /* Trái tim từ GitHub (HTML/CSS) */
-    .heart-shape {
+    /* Trái tim đúng như GitHub repo (heat) */
+    .heart {
       position: fixed;
       top: 50%;
       left: 50%;
       width: 100px;
       height: 90px;
       background: red;
-      transform: translate(-50%, -50%) rotate(-45deg);
-      animation: heartbeat 1s infinite;
+      transform: translate(-50%, -50%);
       z-index: 9999;
       display: none;
+      animation: heartbeat 1s infinite;
     }
 
-    .heart-shape::before,
-    .heart-shape::after {
+    .heart::before,
+    .heart::after {
       content: "";
       position: absolute;
       width: 100px;
@@ -95,29 +94,29 @@
       border-radius: 50%;
     }
 
-    .heart-shape::before {
+    .heart::before {
       top: -50px;
       left: 0;
     }
 
-    .heart-shape::after {
+    .heart::after {
       left: 50px;
       top: 0;
     }
 
     @keyframes heartbeat {
       0%, 100% {
-        transform: translate(-50%, -50%) rotate(-45deg) scale(1);
+        transform: translate(-50%, -50%) scale(1);
       }
       50% {
-        transform: translate(-50%, -50%) rotate(-45deg) scale(1.2);
+        transform: translate(-50%, -50%) scale(1.2);
       }
     }
   </style>
 </head>
 <body>
 
-<!-- Cảnh báo màn hình dọc -->
+<!-- Cảnh báo xoay ngang -->
 <div id="rotateNotice">
   <svg class="phone-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="white">
     <path d="M0 64C0 28.7 28.7 0 64 0H320c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 
@@ -126,8 +125,8 @@
   Vui lòng xoay ngang màn hình để xem nội dung tốt nhất ❤️
 </div>
 
-<!-- Trái tim đập (CSS-based) -->
-<div class="heart-shape" id="heart"></div>
+<!-- Trái tim từ GitHub (heat) -->
+<div class="heart" id="heart"></div>
 
 <script>
   const columnWidth = 40;
@@ -176,7 +175,7 @@
     }
   }
 
-  // Hiện trái tim sau 5 giây
+  // Hiện trái tim sau 5s
   setTimeout(() => {
     document.getElementById('heart').style.display = 'block';
   }, 5000);
