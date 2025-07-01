@@ -25,168 +25,143 @@
     }
 
     @keyframes fall {
-      0% {
-        transform: translateY(-100px);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(100vh);
-        opacity: 0;
-      }
+      0% { transform: translateY(-100px); opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
     }
 
     #rotateNotice {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: black;
-      color: white;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: black; color: white;
       font-family: Arial, sans-serif;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 20px;
-      font-size: 18px;
-      z-index: 9999;
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 20px;
+      font-size: 18px; z-index: 9999;
     }
 
     .phone-icon {
-      width: 60px;
-      height: 60px;
+      width: 60px; height: 60px;
       margin-bottom: 20px;
       animation: rotatePhone 2s infinite ease-in-out;
       opacity: 0.8;
     }
 
     @keyframes rotatePhone {
-      0%   { transform: rotate(0deg); }
-      25%  { transform: rotate(15deg); }
-      50%  { transform: rotate(0deg); }
-      75%  { transform: rotate(-15deg); }
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(15deg); }
+      50% { transform: rotate(0deg); }
+      75% { transform: rotate(-15deg); }
       100% { transform: rotate(0deg); }
     }
 
-    /* Trái tim đúng như GitHub repo (heat) */
-    .heart {
+    /* Trái tim từ GitHub */
+    .wrapper {
       position: fixed;
       top: 50%;
       left: 50%;
-      width: 100px;
-      height: 90px;
-      background: red;
       transform: translate(-50%, -50%);
+      width: 300px;
+      height: 300px;
       z-index: 9999;
       display: none;
-      animation: heartbeat 1s infinite;
     }
 
-    .heart::before,
-    .heart::after {
-      content: "";
-      position: absolute;
-      width: 100px;
-      height: 90px;
+    .particle {
+      width: 10px;
+      height: 10px;
       background: red;
-      border-radius: 50%;
+      position: absolute;
+      animation: beat 1s infinite;
     }
 
-    .heart::before {
-      top: -50px;
-      left: 0;
-    }
-
-    .heart::after {
-      left: 50px;
-      top: 0;
-    }
-
-    @keyframes heartbeat {
+    @keyframes beat {
       0%, 100% {
-        transform: translate(-50%, -50%) scale(1);
+        transform: scale(1);
       }
       50% {
-        transform: translate(-50%, -50%) scale(1.2);
+        transform: scale(1.4);
       }
     }
+
   </style>
 </head>
 <body>
 
-<!-- Cảnh báo xoay ngang -->
-<div id="rotateNotice">
-  <svg class="phone-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="white">
-    <path d="M0 64C0 28.7 28.7 0 64 0H320c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 
-    0-64-28.7-64-64V64zm192 400a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>
-  </svg>
-  Vui lòng xoay ngang màn hình để xem nội dung tốt nhất ❤️
-</div>
+  <!-- Cảnh báo xoay ngang -->
+  <div id="rotateNotice">
+    <svg class="phone-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="white">
+      <path d="M0 64C0 28.7 28.7 0 64 0H320c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V64zm192 400a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>
+    </svg>
+    Vui lòng xoay ngang màn hình để xem nội dung tốt nhất ❤️
+  </div>
 
-<!-- Trái tim từ GitHub (heat) -->
-<div class="heart" id="heart"></div>
+  <!-- Trái tim particles từ GitHub -->
+  <div class="wrapper" id="heart-container">
+    <!-- Các particle được vẽ ra bằng JS bên dưới -->
+  </div>
 
-<script>
-  const columnWidth = 40;
-  const screenWidth = window.innerWidth;
-  const totalColumns = Math.floor(screenWidth / columnWidth);
-  const usedColumns = new Set();
+  <script>
+    const columnWidth = 40;
+    const totalColumns = Math.floor(window.innerWidth / columnWidth);
+    const used = new Set();
 
-  function getAvailableColumn() {
-    if (usedColumns.size >= totalColumns) {
-      usedColumns.clear();
+    function getColumn() {
+      if (used.size >= totalColumns) used.clear();
+      let col;
+      do { col = Math.floor(Math.random() * totalColumns); }
+      while (used.has(col));
+      used.add(col);
+      return col * columnWidth;
     }
 
-    let col;
-    do {
-      col = Math.floor(Math.random() * totalColumns);
-    } while (usedColumns.has(col));
+    function createRain() {
+      if (window.matchMedia("(orientation: portrait)").matches) return;
+      const d = document.createElement('div');
+      d.className = 'rain';
+      d.innerHTML = 'i<br>l<br>o<br>v<br>e<br>y<br>o<br>u';
+      d.style.left = getColumn() + 'px';
+      const t = Math.random() * 1.5 + 1.5;
+      d.style.animationDuration = t + 's';
+      document.body.appendChild(d);
+      setTimeout(() => d.remove(), t * 1000);
+    }
 
-    usedColumns.add(col);
-    return col * columnWidth;
-  }
+    function check() {
+      document.getElementById('rotateNotice')
+        .style.display = window.matchMedia("(orientation: portrait)").matches ? 'flex' : 'none';
+    }
 
-  function createRain() {
-    if (window.matchMedia("(orientation: portrait)").matches) return;
+    // Tạo trái tim particles sau 5s
+    function createHeart() {
+      const heart = document.getElementById('heart-container');
+      const rows = 30;
+      const cols = 30;
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const xPos = x / cols * 2 - 1;
+          const yPos = y / rows * 2 - 1;
+          const r = Math.pow(xPos * xPos + yPos * yPos - 0.3, 3) - xPos * xPos * yPos * yPos * yPos;
+          if (r <= 0) {
+            const dot = document.createElement('div');
+            dot.className = 'particle';
+            dot.style.left = `${x * 10}px`;
+            dot.style.top = `${y * 10}px`;
+            heart.appendChild(dot);
+          }
+        }
+      }
+      heart.style.display = 'block';
+    }
 
-    const rain = document.createElement('div');
-    rain.classList.add('rain');
-    rain.innerHTML = 'i<br>l<br>o<br>v<br>e<br>y<br>o<br>u';
-    rain.style.left = getAvailableColumn() + 'px';
+    window.addEventListener('load', check);
+    window.addEventListener('orientationchange', () => setTimeout(check, 300));
 
-    const duration = Math.random() * 1.5 + 1.5;
-    rain.style.animationDuration = duration + 's';
-
-    document.body.appendChild(rain);
+    setInterval(createRain, 60);
 
     setTimeout(() => {
-      rain.remove();
-    }, duration * 1000);
-  }
-
-  function checkOrientation() {
-    const notice = document.getElementById('rotateNotice');
-    if (window.matchMedia("(orientation: portrait)").matches) {
-      notice.style.display = 'flex';
-    } else {
-      notice.style.display = 'none';
-    }
-  }
-
-  // Hiện trái tim sau 5s
-  setTimeout(() => {
-    document.getElementById('heart').style.display = 'block';
-  }, 5000);
-
-  window.addEventListener("load", checkOrientation);
-  window.addEventListener("orientationchange", () => {
-    setTimeout(checkOrientation, 300);
-  });
-
-  setInterval(createRain, 60);
-</script>
+      createHeart();
+    }, 5000);
+  </script>
 
 </body>
 </html>
