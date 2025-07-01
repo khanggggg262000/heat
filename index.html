@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Heart in the Rain of Love</title>
+  <title>Heart in Rain of Love</title>
   <style>
     html, body {
       height: 100%;
@@ -12,7 +12,6 @@
       overflow: hidden;
     }
 
-    /* Mưa chữ */
     .rain {
       position: absolute;
       color: white;
@@ -37,7 +36,6 @@
       }
     }
 
-    /* Trái tim đập */
     .box {
       width: 100%;
       position: absolute;
@@ -58,8 +56,8 @@
 
     #pinkboard {
       position: relative;
-      height: 500px;
-      width: 500px;
+      height: 600px;
+      width: 600px;
       animation: animate 1.3s infinite;
     }
 
@@ -77,8 +75,7 @@
       left: 100px;
       transform: rotate(-45deg);
       transform-origin: 0 100%;
-      box-shadow: 0 14px 28px rgba(0,0,0,0.25),
-                  0 10px 10px rgba(0,0,0,0.22);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
     }
 
     #pinkboard:after {
@@ -93,13 +90,67 @@
       60%  { transform: scale(1.2); }
       100% { transform: scale(1); }
     }
+
+    /* Cảnh báo xoay ngang */
+    #rotate-warning {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      color: white;
+      font-size: 20px;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 20vh;
+      z-index: 9999;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #rotate-warning .rotate-icon {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 20px;
+      animation: rotateIcon 2s infinite ease-in-out;
+      opacity: 0.8;
+    }
+
+    @keyframes rotateIcon {
+      0%   { transform: rotate(0deg); }
+      25%  { transform: rotate(90deg); }
+      50%  { transform: rotate(0deg); }
+      75%  { transform: rotate(-90deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    @media screen and (orientation: portrait) {
+      #rotate-warning {
+        display: flex;
+      }
+    }
+
+    @media screen and (orientation: landscape) {
+      #rotate-warning {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
 
-<!-- Trái tim đập -->
+<!-- Trái tim -->
 <div class="box">
   <canvas id="pinkboard"></canvas>
+</div>
+
+<!-- Cảnh báo xoay ngang -->
+<div id="rotate-warning">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Rotate-device-icon.svg/200px-Rotate-device-icon.svg.png" alt="Rotate device" class="rotate-icon">
+  <div>Vui lòng xoay ngang màn hình để xem nội dung tốt nhất ❤️</div>
 </div>
 
 <!-- Mưa chữ -->
@@ -112,11 +163,8 @@
     const duration = Math.random() * 1.5 + 1.5;
     rain.style.animationDuration = duration + 's';
     document.body.appendChild(rain);
-    setTimeout(() => {
-      rain.remove();
-    }, duration * 1000);
+    setTimeout(() => rain.remove(), duration * 1000);
   }
-
   setInterval(createRain, 80);
 </script>
 
@@ -131,14 +179,6 @@
       size: 13,
     },
   };
-
-  (function(){
-    if (!window.requestAnimationFrame){
-      window.requestAnimationFrame = function(callback){
-        return setTimeout(callback, 1000 / 60);
-      };
-    }
-  })();
 
   var Point = function(x, y) {
     this.x = x || 0;
@@ -240,7 +280,6 @@
       var ctx = canvas.getContext('2d');
       canvas.width = settings.particles.size;
       canvas.height = settings.particles.size;
-
       ctx.beginPath();
       var t = -Math.PI;
       var point = pointOnHeart(t);
@@ -253,7 +292,6 @@
       ctx.closePath();
       ctx.fillStyle = 'red';
       ctx.fill();
-
       var img = new Image();
       img.src = canvas.toDataURL();
       return img;
