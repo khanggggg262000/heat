@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
   <meta charset="UTF-8">
   <title>Heart in Rain of Love</title>
   <style>
@@ -93,23 +94,26 @@
 
     /* Cảnh báo xoay ngang */
     #rotate-warning {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.95);
-      color: white;
-      font-size: 20px;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding-top: 20vh;
-      z-index: 9999;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.95);
+  color: white;
+  font-size: 20px;
+  font-family: Arial, sans-serif;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
 
     #rotate-warning .rotate-icon {
       width: 80px;
@@ -149,8 +153,14 @@
 
 <!-- Cảnh báo xoay ngang -->
 <div id="rotate-warning">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Rotate-device-icon.svg/200px-Rotate-device-icon.svg.png" alt="Rotate device" class="rotate-icon">
-  <div>Vui lòng xoay ngang màn hình để xem nội dung tốt nhất ❤️</div>
+  <svg class="rotate-icon" width="80" height="80" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+    <g transform="rotate(0 12 12)">
+      <path d="M7 1H17C18.66 1 20 2.34 20 4V20C20 21.66 18.66 23 17 23H7C5.34 23 4 21.66 4 20V4C4 2.34 5.34 1 7 1Z" stroke="white" stroke-width="2" fill="none"/>
+      <path d="M12 4V2M12 22V20M15.5 8L17.5 10L15.5 12" stroke="white" stroke-width="2" fill="none"/>
+      <animateTransform attributeName="transform" attributeType="XML" type="rotate" values="0 12 12; 90 12 12; 0 12 12" dur="2.5s" repeatCount="indefinite"/>
+    </g>
+  </svg>
+  <div>Vui lòng xoay ngang màn hình để xem</div>
 </div>
 
 <!-- Mưa chữ -->
