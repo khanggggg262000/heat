@@ -177,7 +177,7 @@
 <body>
 
     <!-- Trái tim -->
-    <div class="box">
+    <div class="box" id="heart-container" style="display: none;">
         <canvas id="pinkboard"></canvas>
     </div>
 
@@ -370,7 +370,20 @@
             }, 10);
         })(document.getElementById('pinkboard'));
     </script>
+    
+    <script>
+    function showHeartOnTouch() {
+        const heartContainer = document.getElementById('heart-container');
+        heartContainer.style.display = 'flex';
+        // Gỡ sự kiện sau lần chạm đầu tiên
+        document.removeEventListener('click', showHeartOnTouch);
+        document.removeEventListener('touchstart', showHeartOnTouch);
+    }
 
+    // Lắng nghe chạm/click
+    document.addEventListener('click', showHeartOnTouch);
+    document.addEventListener('touchstart', showHeartOnTouch);
+</script>
 </body>
 
 </html>
