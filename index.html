@@ -372,17 +372,15 @@
     </script>
     
     <script>
-    function showHeartOnTouch() {
+    function showHeartOnPointerDown() {
         const heartContainer = document.getElementById('heart-container');
         heartContainer.style.display = 'flex';
-        // Gỡ sự kiện sau lần chạm đầu tiên
-        document.removeEventListener('click', showHeartOnTouch);
-        document.removeEventListener('touchstart', showHeartOnTouch);
+        // Gỡ sự kiện sau lần đầu
+        document.removeEventListener('pointerdown', showHeartOnPointerDown);
     }
 
-    // Lắng nghe chạm/click
-    document.addEventListener('click', showHeartOnTouch);
-    document.addEventListener('touchstart', showHeartOnTouch);
+    // Lắng nghe sự kiện chạm/click
+    document.addEventListener('pointerdown', showHeartOnPointerDown);
 </script>
 </body>
 
