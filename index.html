@@ -200,9 +200,19 @@
     // Hàm hiển thị các dòng chữ bằng hiệu ứng hạt
     function startParticleTextSequence(index = 0) {
       if (index >= messages.length) {
-        document.getElementById('heart-container').style.display = 'flex';
-        return;
-      }
+  const heart = document.getElementById('heart-container');
+  heart.style.display = 'flex';
+
+  // Gọi lại resize và render để vẽ lại trái tim khi nó được hiển thị
+  const heartCanvas = document.getElementById('pinkboard');
+  if (heartCanvas && heartCanvas.getContext) {
+    heartCanvas.width = heartCanvas.clientWidth;
+    heartCanvas.height = heartCanvas.clientHeight;
+  }
+
+  window.dispatchEvent(new Event('resize'));
+  return;
+}
 
       drawParticleText(messages[index], () => {
         setTimeout(() => startParticleTextSequence(index + 1), delays[index]);
