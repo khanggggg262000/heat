@@ -2,9 +2,8 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-    <title>Heart in Rain of Love</title>
+    <title>Birthday Surprise</title>
     <style>
         html,
         body {
@@ -20,8 +19,6 @@
             color: white;
             font-family: Arial, sans-serif;
             font-size: 16px;
-            font-weight: normal;
-            line-height: 1.2;
             text-align: center;
             animation: fall linear;
             user-select: none;
@@ -46,7 +43,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
             pointer-events: none;
@@ -59,34 +56,9 @@
         }
 
         #pinkboard {
-            position: relative;
             height: 600px;
             width: 600px;
             animation: animate 1.3s infinite;
-        }
-
-        #pinkboard:before,
-        #pinkboard:after {
-            content: '';
-            position: absolute;
-            background: #fff;
-            width: 100px;
-            height: 160px;
-            border-top-left-radius: 50px;
-            border-top-right-radius: 50px;
-        }
-
-        #pinkboard:before {
-            left: 100px;
-            transform: rotate(-45deg);
-            transform-origin: 0 100%;
-            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-        }
-
-        #pinkboard:after {
-            left: 0;
-            transform: rotate(45deg);
-            transform-origin: 100% 100%;
         }
 
         @keyframes animate {
@@ -95,7 +67,7 @@
             }
 
             30% {
-                transform: scale(.8);
+                transform: scale(0.8);
             }
 
             60% {
@@ -107,95 +79,27 @@
             }
         }
 
-        /* Cảnh báo xoay ngang */
-        #rotate-warning {
-            display: none;
+        #text-particle-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0);
-            color: white;
-            font-size: 40px;
-            font-family: Arial, sans-serif;
             z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-
-        #rotate-warning .rotate-icon {
-            width: 200px;
-            height: 200px;
-            margin-bottom: 20px;
-            animation: rotateIcon 4s infinite ease-in-out;
-            opacity: 0.8;
-        }
-
-        @keyframes rotateIcon {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            25% {
-                transform: rotate(90deg);
-            }
-
-            50% {
-                transform: rotate(0deg);
-            }
-
-            75% {
-                transform: rotate(-90deg);
-            }
-
-            100% {
-                transform: rotate(0deg);
-            }
-        }
-
-        @media screen and (orientation: portrait) {
-            #rotate-warning {
-                display: flex;
-            }
-        }
-
-        @media screen and (orientation: landscape) {
-            #rotate-warning {
-                display: none;
-            }
+            pointer-events: none;
+            background: transparent;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Trái tim -->
-    <div class="box" id="heart-container" style="display: none;">
+    <div class="box" id="heart-container">
         <canvas id="pinkboard"></canvas>
     </div>
 
-    <!-- Cảnh báo xoay ngang -->
-    <div id="rotate-warning">
-        <svg class="rotate-icon" width="80" height="80" viewBox="0 0 24 24" fill="white"
-            xmlns="http://www.w3.org/2000/svg">
-            <g transform="rotate(0 12 12)">
-                <path
-                    d="M7 1H17C18.66 1 20 2.34 20 4V20C20 21.66 18.66 23 17 23H7C5.34 23 4 21.66 4 20V4C4 2.34 5.34 1 7 1Z"
-                    stroke="white" stroke-width="2" fill="none" />
-                <path d="M12 4V2M12 22V20M15.5 8L17.5 10L15.5 12" stroke="white" stroke-width="2" fill="none" />
-            </g>
-        </svg>
-        <div>Vui lòng xoay ngang màn hình để xem</div>
-    </div>
+    <canvas id="text-particle-canvas"></canvas>
 
-    <!-- Mưa chữ -->
     <script>
         function createRain() {
             const rain = document.createElement('div');
@@ -207,10 +111,155 @@
             document.body.appendChild(rain);
             setTimeout(() => rain.remove(), duration * 1000);
         }
-        setInterval(createRain, 80);
+        setInterval(createRain, 70);
     </script>
 
-    <!-- Hiệu ứng hạt trái tim -->
+    <script>
+        const messages = [
+            "HAPPY BIRTHDAY",
+            "04.01.1999",
+            "BÙI THỊ BÉ NÊN",
+            "CHÚC EM MỌI CHUYỆN NHƯ Ý",
+            "ANH YÊU EM"
+        ];
+
+        const delays = [3000, 3000, 4000, 3000]; // thời gian cho từng dòng
+
+        function startParticleTextSequence(index = 0) {
+            if (index >= messages.length) {
+                const heart = document.getElementById('heart-container');
+                heart.style.display = 'flex';
+
+                // Gọi lại resize và render để vẽ lại trái tim khi nó được hiển thị
+                const heartCanvas = document.getElementById('pinkboard');
+                if (heartCanvas && heartCanvas.getContext) {
+                    heartCanvas.width = heartCanvas.clientWidth;
+                    heartCanvas.height = heartCanvas.clientHeight;
+                }
+
+                window.dispatchEvent(new Event('resize'));
+                return;
+            }
+
+            drawParticleText(messages[index], () => {
+                setTimeout(() => startParticleTextSequence(index + 1), delays[index]);
+            });
+        }
+
+        function drawParticleText(message, callback) {
+            const canvas = document.getElementById('text-particle-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const isCountdown = ['1', '2', '3'].includes(message.trim());
+            const fontSize = isCountdown ? 160 : 90;
+
+            //const fontSize = 80;
+            const lineHeight = fontSize + 20;
+            const maxWidth = canvas.width * 0.8;
+
+            const offscreen = document.createElement('canvas');
+            const offCtx = offscreen.getContext('2d');
+            offscreen.width = canvas.width;
+            offscreen.height = canvas.height;
+
+            offCtx.fillStyle = "white";
+            offCtx.font = `bold ${fontSize}px 'Segoe UI', sans-serif`;
+            offCtx.textAlign = "center";
+            offCtx.textBaseline = "top";
+
+            // Tách dòng nếu quá dài
+            const words = message.split(" ");
+            let lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                const testLine = currentLine + " " + words[i];
+                const testWidth = offCtx.measureText(testLine).width;
+                if (testWidth < maxWidth) {
+                    currentLine = testLine;
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+
+            // Vẽ từng dòng
+            const startY = (offscreen.height - lineHeight * lines.length) / 2;
+            lines.forEach((line, i) => {
+                offCtx.fillText(line, offscreen.width / 2, startY + i * lineHeight);
+            });
+
+            const imageData = offCtx.getImageData(0, 0, offscreen.width, offscreen.height);
+            const particles = [];
+
+            for (let y = 0; y < imageData.height; y += 3) {
+                for (let x = 0; x < imageData.width; x += 3) {
+                    const index = (y * imageData.width + x) * 4;
+                    const alpha = imageData.data[index + 3];
+                    if (alpha > 150) {
+                        particles.push({
+                            x: Math.random() * canvas.width,
+                            y: Math.random() * canvas.height,
+                            tx: x,
+                            ty: y,
+                            vx: 0,
+                            vy: 0
+                        });
+                    }
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (const p of particles) {
+                    const dx = p.tx - p.x;
+                    const dy = p.ty - p.y;
+                    p.vx += dx * 0.01;
+                    p.vy += dy * 0.01;
+                    p.vx *= 0.90;
+                    p.vy *= 0.90;
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    ctx.fillStyle = "white";
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 0.6, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+            if (callback) setTimeout(callback, 1000);
+        }
+
+
+        document.addEventListener('pointerdown', () => {
+            const countdownSequence = ['3', '2', '1'];
+            let index = 0;
+
+            function showCountdownWithParticles() {
+                if (index >= countdownSequence.length) {
+                    // Sau khi đếm ngược xong, chờ 3 giây rồi bắt đầu hiển thị các câu chúc
+                    setTimeout(() => {
+                        startParticleTextSequence();
+                    }, 1000);
+                    return;
+                }
+
+                drawParticleText(countdownSequence[index], () => {
+                    index++;
+                    setTimeout(showCountdownWithParticles, 1000);
+                });
+            }
+
+            showCountdownWithParticles();
+        }, { once: true });
+    </script>
+
     <script>
         var settings = {
             particles: {
@@ -222,42 +271,24 @@
             },
         };
 
-        var Point = function (x, y) {
-            this.x = x || 0;
-            this.y = y || 0;
-        };
-        Point.prototype.clone = function () {
-            return new Point(this.x, this.y);
-        };
+        var Point = function (x, y) { this.x = x || 0; this.y = y || 0; };
+        Point.prototype.clone = function () { return new Point(this.x, this.y); };
         Point.prototype.length = function (length) {
-            if (typeof length === "undefined")
-                return Math.sqrt(this.x * this.x + this.y * this.y);
-            this.normalize();
-            this.x *= length;
-            this.y *= length;
-            return this;
+            if (typeof length === "undefined") return Math.sqrt(this.x * this.x + this.y * this.y);
+            this.normalize(); this.x *= length; this.y *= length; return this;
         };
         Point.prototype.normalize = function () {
-            var length = this.length();
-            this.x /= length;
-            this.y /= length;
-            return this;
+            var length = this.length(); this.x /= length; this.y /= length; return this;
         };
 
         var Particle = function () {
-            this.position = new Point();
-            this.velocity = new Point();
-            this.acceleration = new Point();
-            this.age = 0;
+            this.position = new Point(); this.velocity = new Point(); this.acceleration = new Point(); this.age = 0;
         };
         Particle.prototype.initialize = function (x, y, dx, dy) {
-            this.position.x = x;
-            this.position.y = y;
-            this.velocity.x = dx;
-            this.velocity.y = dy;
+            this.position.x = x; this.position.y = y;
+            this.velocity.x = dx; this.velocity.y = dy;
             this.acceleration.x = dx * settings.particles.effect;
-            this.acceleration.y = dy * settings.particles.effect;
-            this.age = 0;
+            this.acceleration.y = dy * settings.particles.effect; this.age = 0;
         };
         Particle.prototype.update = function (deltaTime) {
             this.position.x += this.velocity.x * deltaTime;
@@ -275,11 +306,8 @@
 
         var ParticlePool = function (length) {
             this.particles = new Array(length);
-            for (var i = 0; i < this.particles.length; i++)
-                this.particles[i] = new Particle();
-            this.firstActive = 0;
-            this.firstFree = 0;
-            this.duration = settings.particles.duration;
+            for (var i = 0; i < this.particles.length; i++) this.particles[i] = new Particle();
+            this.firstActive = 0; this.firstFree = 0; this.duration = settings.particles.duration;
         };
         ParticlePool.prototype.add = function (x, y, dx, dy) {
             this.particles[this.firstFree].initialize(x, y, dx, dy);
@@ -346,7 +374,6 @@
                 time = newTime;
 
                 context.clearRect(0, 0, canvas.width, canvas.height);
-
                 var amount = particleRate * deltaTime;
                 for (var i = 0; i < amount; i++) {
                     var pos = pointOnHeart(Math.PI - 2 * Math.PI * Math.random());
@@ -370,18 +397,7 @@
             }, 10);
         })(document.getElementById('pinkboard'));
     </script>
-    
-    <script>
-    function showHeartOnPointerDown() {
-        const heartContainer = document.getElementById('heart-container');
-        heartContainer.style.display = 'flex';
-        // Gỡ sự kiện sau lần đầu
-        document.removeEventListener('pointerdown', showHeartOnPointerDown);
-    }
 
-    // Lắng nghe sự kiện chạm/click
-    document.addEventListener('pointerdown', showHeartOnPointerDown);
-</script>
 </body>
 
 </html>
