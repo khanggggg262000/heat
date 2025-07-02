@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Birthday Surprise</title>
+  <title>Happy Birthday Ni Doll</title>
   <style>
     html,
     body {
@@ -187,9 +187,10 @@
 
     // Nội dung từng dòng chữ
     const messages = [
-      "CHÚC EM SINH NHẬT VUI VẺ",
+      "HAPPY BIRTHDAY",
+      "NI DOLL",
       "04.01.1999",
-      "CHÚC CỤC CƯNG MỌI CHUYỆN NHƯ Ý",
+      "CHÚC EM MỌI CHUYỆN NHƯ Ý",
       "ANH YÊU EM"
     ];
 
@@ -215,7 +216,7 @@
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
 
-      const isCountdown = ['1', '2', '3'].includes(message.trim());
+      const isCountdown = ['0','1', '2', '3'].includes(message.trim());
       const fontSize = isCountdown ? 160 : 90;
       const lineHeight = fontSize + 20;
       const maxWidth = canvas.width * 0.8;
